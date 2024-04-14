@@ -3,21 +3,25 @@ package com.example.spring_linebot.handler;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @LineMessageHandler
-public class MessageHandler {
+public class LinebotHandler {
+
+    private final Logger log = LoggerFactory.getLogger(LinebotHandler.class);
     @EventMapping
-    public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
-        // 這邊做的就是簡單的 echo
-        System.out.println("event: " + event);
-        return new TextMessage(event.getMessage().getText());
+    public Message handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+        log.info("event: " + event);
+        final String originalMessageText = event.getMessage().getText();
+        return new TextMessage(originalMessageText);
     }
 
     @EventMapping
     public void handleDefaultMessageEvent(Event event) {
-        // 就是加入聊天室, 離開聊天室, 還有一些有的沒的事件
         System.out.println("event: " + event);
     }
 }
