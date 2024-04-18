@@ -4,6 +4,8 @@ import com.example.spring_linebot.service.OpenAiService;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.event.source.GroupSource;
+import com.linecorp.bot.model.event.source.Source;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
@@ -22,7 +24,12 @@ public class LinebotHandler {
     public Message handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         log.info("event: " + event);
         final String originalMessageText = event.getMessage().getText();
-        String chatRs = openAiService.getChatResponse(originalMessageText).getData();
+        Source source = event.getSource();
+        String chatRs = "";
+        if(source instanceof GroupSource)
+             chatRs = openAiService.getChatResponse("Group:"+((GroupSource) source).getGroupId(),originalMessageText).getData();
+        else
+            chatRs = openAiService.getChatResponse("User:"+source.getUserId(),originalMessageText).getData();
         return new TextMessage(chatRs);
     }
 
