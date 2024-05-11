@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  java-app-1:
+    container_name: linebotapp-1
+    build:
+      context: ./
+    ports:
+      - "8081"
+    environment:
+      - DB_REDIS_IP=redis-db
+    networks:
+      - lineBoot_bridge
+
+  java-app-2:
+    container_name: linebotapp-2
+    build:
+      context: ./
+    ports:
+      - "8081"
+    environment:
+      - DB_REDIS_IP=redis-db
+    networks:
+      - lineBoot_bridge
+
+  java-app-3:
+    container_name: linebotapp-3
+    build:
+      context: ./
+    ports:
+      - "8081"
+    environment:
+      - DB_REDIS_IP=redis-db
+    networks:
+      - lineBoot_bridge
+
+  redis-db:
+    container_name: 'redis-db'
+    image: redis
+    volumes:
+      - redis_data:/data
+    ports: 
+      - "6379:6379"
+    networks:
+      - lineBoot_bridge
+
+  load-balance:
+    container_name: nginx
+    image: 'nginx'
+    build:
+      context: ./nginx    # 指定 Nginx 的 Dockerfile 所在的上下文路径
+      dockerfile: Dockerfile    # 指定 Nginx 的 Dockerfile 路径
+    ports:
+      - "80:80"
+    networks:
+      - lineBoot_bridge
+    environment:
+      - LB_IP_1=linebotapp-1
+      - LB_IP_2=linebotapp-2
+      - LB_IP_3=linebotapp-3
+
+networks:
+  lineBoot_bridge:
+    driver: bridge
+
+volumes:
+  redis_data:
