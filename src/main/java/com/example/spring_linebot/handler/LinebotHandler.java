@@ -22,6 +22,9 @@ public class LinebotHandler {
     private final Logger log = LoggerFactory.getLogger(LinebotHandler.class);
     @EventMapping
     public Message handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+        String redisIp = System.getenv("DB_REDIS_IP");
+        System.out.println("Redis IP: " + redisIp);
+        System.out.println( "收到訊息囉 :" + event);
         log.info("event: " + event);
         final String originalMessageText = event.getMessage().getText();
         Source source = event.getSource();
