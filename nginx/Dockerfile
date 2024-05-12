@@ -1,12 +1,13 @@
 FROM nginx:latest
 
-COPY nginx.conf /etc/nginx/nginx.conf 
+COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY nginx-start.sh /docker-entrypoint.d/nginx-start.sh
 # 添加 ssl key
-COPY ./ssl/certificate.crt /etc/nginx/certs/certificate.crt
-COPY ./ssl/ca_bundle.crt /etc/nginx/certs/ca_bundle.crt
-COPY ./ssl/private.key /etc/nginx/certs/private.key
+COPY ./ssl/fullchain.pem /etc/nginx/certs/fullchain.pem
+COPY ./ssl/cert.pem /etc/nginx/certs/cert.pem
+COPY ./ssl/chain.pem /etc/nginx/certs/chain.pem
+COPY ./ssl/privkey.pem /etc/nginx/certs/privkey.pem
 
 # 修改啟動腳本權限
 RUN chmod +x /docker-entrypoint.d/nginx-start.sh
