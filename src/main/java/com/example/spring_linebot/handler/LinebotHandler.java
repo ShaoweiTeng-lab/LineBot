@@ -30,12 +30,12 @@ public class LinebotHandler {
         log.info("event: " + event);
         final String originalMessageText = event.getMessage().getText();
         Source source = event.getSource();
-        String chatRs;
+        String chatRs = "";
         if (source instanceof GroupSource && originalMessageText.toLowerCase().startsWith("gpt,"))
             chatRs = openAiService.getChatResponse("Group:" + ((GroupSource) source).getGroupId(), originalMessageText).getData();
         else if (source instanceof UserSource)
             chatRs = openAiService.getChatResponse("User:" + source.getUserId(), originalMessageText).getData();
-        return new TextMessage(null);
+        return chatRs.isEmpty() ? null : new TextMessage(chatRs);
     }
 
     @EventMapping
