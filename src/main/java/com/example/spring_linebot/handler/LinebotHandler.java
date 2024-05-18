@@ -6,6 +6,7 @@ import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.event.source.GroupSource;
 import com.linecorp.bot.model.event.source.Source;
+import com.linecorp.bot.model.event.source.UserSource;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
@@ -30,11 +31,11 @@ public class LinebotHandler {
         final String originalMessageText = event.getMessage().getText();
         Source source = event.getSource();
         String chatRs;
-        if (source instanceof GroupSource)
+        if (source instanceof GroupSource && originalMessageText.toLowerCase().startsWith("gpt,"))
             chatRs = openAiService.getChatResponse("Group:" + ((GroupSource) source).getGroupId(), originalMessageText).getData();
-        else
+        else if (source instanceof UserSource)
             chatRs = openAiService.getChatResponse("User:" + source.getUserId(), originalMessageText).getData();
-        return new TextMessage(chatRs);
+        return new TextMessage(null);
     }
 
     @EventMapping
