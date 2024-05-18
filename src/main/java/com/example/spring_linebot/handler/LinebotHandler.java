@@ -31,7 +31,7 @@ public class LinebotHandler {
         final String originalMessageText = event.getMessage().getText();
         Source source = event.getSource();
         String chatRs = "";
-        if (source instanceof GroupSource && originalMessageText.toLowerCase().startsWith("gpt,"))
+        if (source instanceof GroupSource && originalMessageText.toLowerCase().startsWith("gpt"))
             chatRs = openAiService.getChatResponse("Group:" + ((GroupSource) source).getGroupId(), originalMessageText).getData();
         else if (source instanceof UserSource)
             chatRs = openAiService.getChatResponse("User:" + source.getUserId(), originalMessageText).getData();
